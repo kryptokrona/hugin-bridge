@@ -49,10 +49,10 @@ socket.addEventListener('message', function (event) {
 
     //Parse data from WS
     let json = JSON.parse(data)
-    let { message, nickname } = json
+    let { message, nickname, board } = json
 
     //Send message if public
-    if(message !== undefined) {
+    if(message !== undefined && board === 'Home') {
         sendMessage(nickname,message)
     }
 });
