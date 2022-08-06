@@ -53,14 +53,14 @@ socket.addEventListener('message', function (event) {
 
     //Send message if public
     if(message !== undefined && board === 'Home') {
-        nickname = null ? DEFAULT_NICKNAME : nickname
-        sendMessage(nickname, message)
+        sendMessage(nickname,message)
     }
 });
 
 //Sends message to set CHANNEL_ID
 const sendMessage = (nickname, message) => {
     let channel = client.channels.cache.get(CHANNEL_ID)
+    if (nickname == null) nickname = DEFAULT_NICKNAME
     channel.send(`${nickname}: ${message}`)
 }
 
