@@ -1,22 +1,26 @@
 import DiscordJS, {Intents} from 'discord.js'
 import dotenv from 'dotenv'
 import {WebSocket} from "ws";
+import {myAddress, sendHuginMessage} from "./wb.js";
 
 dotenv.config()
 
 //Config
-
 //Where to connect
 const URL = 'wss://cache.hugin.chat'
 
 //Discord Channel ID
 const CHANNEL_ID = '1005512632855445654'
 
+//The bot User ID
+const BOT_ID = '1005518787484856400'
+
 //Default nickname (if no nickname)
 const DEFAULT_NICKNAME = 'Anon'
 
-const socket = new WebSocket(URL);
+const BOT_ADDRESS = myAddress
 
+const socket = new WebSocket(URL);
 const client = new DiscordJS.Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -49,19 +53,28 @@ socket.addEventListener('message', function (event) {
 
     //Parse data from WS
     let json = JSON.parse(data)
-    let { message, nickname, board } = json
+    console.log(data)
+    let { message, nickname, board, key } = json
 
     //Send message if public
-    if(message !== undefined && board === 'Home') {
-        sendMessage(nickname,message)
+    if(board === 'Home' && message !== undefined && key !== BOT_ADDRESS) {
+        sendDiscordMessage(nickname,message)
     }
 });
 
 //Sends message to set CHANNEL_ID
-const sendMessage = (nickname, message) => {
+const sendDiscordMessage = (nickname, message) => {
     let channel = client.channels.cache.get(CHANNEL_ID)
     if (nickname == null) nickname = DEFAULT_NICKNAME
     channel.send(`${nickname}: ${message}`)
+    console.log(`Sent Discord message`)
+    console.log(`${nickname}: ${message}`)
 }
+
+client.on('messageCreate', data => {
+    if (data.channelId === CHANNEL_ID && data.author.id !== BOT_ID) {
+        sendHuginMessage(data.author.username, data.content)
+    }
+})
 
 client.login(process.env.TOKEN)
