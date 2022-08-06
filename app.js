@@ -24,19 +24,19 @@ const client = new DiscordJS.Client({
     ]
 })
 
-client.on('ready', () => {
-    console.log('The bot is ready 🥳')
-})
-
 // Open connection wit Cache
 socket.addEventListener('open', function (event) {
-    console.log('Connected to Hugin Cache 🤖')
+    console.log(`Connected to ${URL} 🤖`)
 
     //Ping cache to keep Websocket alive
     setInterval(() => {
         socket.send('Keep me alive')
     }, 10000)
 });
+
+client.on('ready', () => {
+    console.log('The bot is ready 🥳')
+})
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
@@ -57,6 +57,7 @@ socket.addEventListener('message', function (event) {
     }
 });
 
+//Sends message to set CHANNEL_ID
 const sendMessage = (nickname, message) => {
     let channel = client.channels.cache.get(CHANNEL_ID)
     if (nickname == null) nickname = DEFAULT_NICKNAME
