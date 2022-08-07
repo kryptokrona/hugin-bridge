@@ -48,18 +48,16 @@ socket.addEventListener('message', function (event) {
     let data = event.data
 
     //Guard against welcome message
-    if (data.startsWith('Connected')) {
-        return
-    }
+    if (!data.startsWith('Connected')) {
+        //Parse data from WS
+        let json = JSON.parse(data)
+        console.log(data)
+        let { message, nickname, board, key } = json
 
-    //Parse data from WS
-    let json = JSON.parse(data)
-    console.log(data)
-    let { message, nickname, board, key } = json
-
-    //Send message if public
-    if(board === 'Home' && message !== undefined && key !== BOT_ADDRESS) {
-        sendDiscordMessage(nickname,message)
+        //Send message if public
+        if(board === 'Home' && message !== undefined && key !== BOT_ADDRESS) {
+            sendDiscordMessage(nickname,message)
+        }
     }
 });
 
