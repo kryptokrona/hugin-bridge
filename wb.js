@@ -32,6 +32,13 @@ const startWallet = async () => {
     wallet.on('heightchange', async (walletBlockCount, localDaemonBlockCount, networkBlockCount) => {
         console.log('SYNC: ' + walletBlockCount, 'local: ' + localDaemonBlockCount, 'network: '+ networkBlockCount)
         console.log('BALANCE: ' + await wallet.getBalance())
+
+        console.log('SAVING WALLET')
+        const saved = wallet.saveWalletToFile('./bridge.wallet', 'hugin123')
+
+        if (!saved) {
+            console.log('Failed to save wallet!');
+        }
     })
 }
 
@@ -52,7 +59,6 @@ try {
         console.log('Saving wallet')
         const saved = wallet.saveWalletToFile('./bridge.wallet', 'hugin123')
 
-        console.log(saved)
         if (!saved) {
             console.log('Failed to save wallet!');
         }
