@@ -19,6 +19,7 @@ const BOT_ID = '1005518787484856400'
 //Default nickname (if no nickname)
 const DEFAULT_NICKNAME = 'Anon'
 
+//Comes form wb.js
 const BOT_ADDRESS = myAddress
 
 const socket = new WebSocket(URL);

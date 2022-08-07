@@ -19,6 +19,8 @@ const startWallet = async () => {
 
     await wallet.start();
 
+    wallet.enableAutoOptimization(false)
+
     const [walletBlockCount, localDaemonBlockCount, networkBlockCount] = wallet.getSyncStatus();
 
     if (walletBlockCount === 0) {
