@@ -5,7 +5,7 @@ import {toHex} from "./utils.js";
 
 const NODE = 'blocksum.org'
 const PORT = 11898
-let daemon
+const daemon = new WB.Daemon(NODE, PORT)
 
 let wallet
 export let myAddress
@@ -63,8 +63,6 @@ try {
             console.log('Failed to save wallet!');
         }
     }
-
-    daemon = new WB.Daemon(NODE, PORT)
 
     //Start wallet
     await startWallet()
