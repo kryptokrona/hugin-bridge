@@ -2,6 +2,7 @@ import DiscordJS, {Intents} from 'discord.js'
 import dotenv from 'dotenv'
 import {WebSocket} from "ws";
 import {myAddress, sendHuginMessage} from "./wb.js";
+import he from 'he'
 
 dotenv.config()
 
@@ -64,6 +65,7 @@ socket.addEventListener('message', function (event) {
 
 //Sends message to set CHANNEL_ID
 const sendDiscordMessage = (nickname, message) => {
+    message = he.decode(message)
     let channel = client.channels.cache.get(CHANNEL_ID)
     if (nickname == null) nickname = DEFAULT_NICKNAME
     channel.send(`${nickname}: ${message}`)
@@ -73,7 +75,7 @@ const sendDiscordMessage = (nickname, message) => {
 
 client.on('messageCreate', data => {
     if (data.channelId === CHANNEL_ID && data.author.id !== BOT_ID) {
-        sendHuginMessage(data.author.username, data.content)
+        sendHuginMessage(data.author.username, (data.content))
     }
 })
 
