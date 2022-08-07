@@ -2,15 +2,23 @@ import WB from "kryptokrona-wallet-backend-js";
 import * as fs from "fs";
 import {CryptoNote} from "kryptokrona-utils";
 import {toHex} from "./utils.js";
+import {config} from "./config.js";
 
 const NODE = 'blocksum.org'
 const PORT = 11898
 const daemon = new WB.Daemon(NODE, PORT)
 
 let wallet
-export let myAddress
 
 const xkrUtils = new CryptoNote()
+
+const logIntoWallet = async () => {
+    const [wallet, error] = await WB.WalletBackend.openWalletFromFile(daemon, './bridge.wallet', 'hugin123');
+    if (error) {
+        console.log('Failed to open wallet: ' + error.toString());
+    }
+    return wallet
+}
 
 const startWallet = async () => {
     //Start sync process
@@ -27,9 +35,7 @@ const startWallet = async () => {
         await wallet.reset(networkBlockCount - 100)
     }
 
-    //Bridge wallet address
-    myAddress = wallet.getPrimaryAddress()
-    console.log(myAddress)
+    console.log('BOT ADDRESS:', wallet.getPrimaryAddress())
 
     wallet.on('heightchange', async (walletBlockCount, localDaemonBlockCount, networkBlockCount) => {
         console.log('SYNC: ' + walletBlockCount, 'local: ' + localDaemonBlockCount, 'network: '+ networkBlockCount)
@@ -44,39 +50,30 @@ const startWallet = async () => {
     })
 }
 
-const logIntoWallet = async () => {
-    const [wallet, error] = await WB.WalletBackend.openWalletFromFile(daemon, './bridge.wallet', 'hugin123');
-    if (error) {
-        console.log('Failed to open wallet: ' + error.toString());
-    }
-    return wallet
-}
+export const startHugin = async () => {
+    try {
+        //Creates a wallet if we don't have one
+        if (!(fs.existsSync('./bridge.wallet'))) {
+            console.log('Creating wallet')
+            const wallet = await WB.WalletBackend.createWallet(daemon);
 
-try {
-    //Create a wallet if we don't have one
-    if (!(fs.existsSync('./bridge.wallet'))) {
-        console.log('Creating wallet')
-        const wallet = await WB.WalletBackend.createWallet(daemon);
+            console.log('Saving wallet')
+            const saved = wallet.saveWalletToFile('./bridge.wallet', 'hugin123')
 
-        console.log('Saving wallet')
-        const saved = wallet.saveWalletToFile('./bridge.wallet', 'hugin123')
-
-        if (!saved) {
-            console.log('Failed to save wallet!');
+            if (!saved) {
+                console.log('Failed to save wallet!');
+            }
         }
+
+        //Start wallet
+        await startWallet()
+
+    } catch (err) {
+        console.error(err)
     }
-
-    //Start wallet
-    await startWallet()
-
-} catch (err) {
-    console.error(err)
 }
 
 export const sendHuginMessage = async (nickname, message) => {
-    console.log(`Sent Hugin message`)
-    console.log(`${nickname}: ${message}`)
-
     let payload_hex;
 
     try {
@@ -87,7 +84,7 @@ export const sendHuginMessage = async (nickname, message) => {
 
         let payload_json = {
             "m": message,
-            "k": myAddress,
+            "k": config.BOT_ADDRESS,
             "s": signature,
             "brd": "Home",
             "t": timestamp,
@@ -98,7 +95,7 @@ export const sendHuginMessage = async (nickname, message) => {
         payload_hex = toHex(JSON.stringify(payload_json))
 
         let result = await wallet.sendTransactionAdvanced(
-            [[myAddress, 1]], // destinations,
+            [[config.BOT_ADDRESS, 1]], // destinations,
             3, // mixin
             {fixedFee: 10000, isFixedFee: true}, // fee
             undefined,
@@ -110,6 +107,8 @@ export const sendHuginMessage = async (nickname, message) => {
         );
 
         if (result.success) {
+            console.log(`Sent Hugin message`)
+            console.log(`${nickname}: ${message}`)
             console.log(`Sent transaction, hash ${result.transactionHash}, fee ${WB.prettyPrintAmount(result.fee)}`);
         } else {
             console.log(`Failed to send transaction: ${result.error.toString()}`);
@@ -120,7 +119,7 @@ export const sendHuginMessage = async (nickname, message) => {
     }
 }
 
-async function optimizeMessages(nbrOfTxs) {
+const optimizeMessages = async nbrOfTxs => {
     console.log('optimize');
     try {
 
