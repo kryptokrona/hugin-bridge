@@ -1,6 +1,7 @@
 import {WebSocket} from "ws";
 import {sendDiscordMessage} from "./discord.js";
 import {config} from "./config.js";
+import {sendTelegramMessage} from "./telegram.js";
 
 const socket = new WebSocket(config.WEBSOCKET_URL);
 
@@ -12,25 +13,30 @@ export const startWebsocket = () => {
 
         //Ping cache to keep Websocket alive
         setInterval(() => {
-            socket.send('Keep me alive')
+            socket.send(JSON.stringify("ping"))
+            console.log('ping')
         }, 10000)
     });
+
+    socket.addEventListener('close', () => {
+        console.log('Connection closed')
+    })
 
 // Listen for messages
     socket.addEventListener('message', function (event) {
         let data = event.data
 
-        //Guard against welcome message
-        if (!data.startsWith('Connected')) {
-            //Parse data from WS
+        try {
             let json = JSON.parse(data)
-            console.log(data)
-            let { message, nickname, board, key } = json
+            let { message, nickname } = json
 
-            //Send message if public
-            if(board === 'Home' && message !== undefined && key !== config.BOT_ADDRESS) {
+            if (json.board === 'Home') {
                 sendDiscordMessage(nickname,message)
+                //sendTelegramMessage(nickname, message)
             }
+        } catch (err) {
+            console.log(err)
         }
+
     });
 }
