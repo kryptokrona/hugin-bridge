@@ -73,7 +73,7 @@ export const startHugin = async () => {
     }
 }
 
-export const sendHuginMessage = async (nickname, message) => {
+export const sendHuginMessage = async (nickname, message, fee=10000) => {
     let payload_hex;
 
     try {
@@ -97,7 +97,7 @@ export const sendHuginMessage = async (nickname, message) => {
         let result = await wallet.sendTransactionAdvanced(
             [[config.BOT_ADDRESS, 1]], // destinations,
             3, // mixin
-            {fixedFee: 10000, isFixedFee: true}, // fee
+            {fixedFee: fee, isFixedFee: true}, // fee
             undefined,
             undefined,
             undefined,
@@ -112,6 +112,12 @@ export const sendHuginMessage = async (nickname, message) => {
             console.log(`Sent transaction, hash ${result.transactionHash}, fee ${WB.prettyPrintAmount(result.fee)}`);
         } else {
             console.log(`Failed to send transaction: ${result.error.toString()}`);
+            const new_fee = fee + 500;
+            if (new_fee > 20000) {
+              console.log(`Fee already too high, ignoring subsequent attempts`);
+            }
+            console.log(`Trying again with fee ${new_fee}.`);
+            sendHuginMessage(nickname, message, fee);
         }
 
     } catch(err) {
