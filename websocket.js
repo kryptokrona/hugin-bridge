@@ -15,7 +15,7 @@ export const startWebsocket = () => {
         setInterval(() => {
             socket.send(JSON.stringify("ping"))
             console.log('ping')
-        }, 10000)
+        }, 30000)
     });
 
     socket.addEventListener('close', () => {
@@ -32,7 +32,7 @@ export const startWebsocket = () => {
 
             if (json.board === 'Home') {
                 sendDiscordMessage(nickname,message)
-                //sendTelegramMessage(nickname, message)
+                sendTelegramMessage(nickname, message)
             }
         } catch (err) {
             console.log(err)
