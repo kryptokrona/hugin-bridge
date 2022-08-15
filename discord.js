@@ -33,12 +33,12 @@ export const startDiscord = () => {
 }
 
 //Sends message to set CHANNEL_ID
-export const sendDiscordMessage = (nickname, message) => {
+export const sendDiscordMessage = (nickname, message, board) => {
     message = he.decode(message)
     let channel = client.channels.cache.get(config.DISCORD_CHANNEL_ID)
     if (nickname == null) nickname = config.DEFAULT_NICKNAME
     channel.send(`${nickname}: ${message}`)
     console.log(`Sent Discord message`)
-    console.log(`${nickname}: ${message}`)
+    console.log(`${board} | ${nickname}: ${message}`)
 }
 

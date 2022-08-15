@@ -27,13 +27,13 @@ export const startWebsocket = () => {
         let data = event.data
 
         try {
-            let json = JSON.parse(data)
-            let { message, nickname } = json
 
-            if (json.board === 'Home') {
-                sendDiscordMessage(nickname,message)
-                sendTelegramMessage(nickname, message)
-            }
+            let json = JSON.parse(data)
+            let {message, nickname, board} = json
+
+            sendDiscordMessage(nickname, message, board)
+            //sendTelegramMessage(nickname, message)
+
         } catch (err) {
             console.log(err)
         }
