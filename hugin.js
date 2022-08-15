@@ -73,7 +73,7 @@ export const startHugin = async () => {
     }
 }
 
-export const sendHuginMessage = async (nickname, message, fee=10000, attempt=1) => {
+export const sendHuginMessage = async (nickname, message, board, fee=10000, attempt=1) => {
 
     if (attempt > 10) {
       return false;
@@ -91,7 +91,7 @@ export const sendHuginMessage = async (nickname, message, fee=10000, attempt=1) 
             "m": message,
             "k": config.BOT_ADDRESS,
             "s": signature,
-            "brd": "Home",
+            "brd": board,
             "t": timestamp,
             "n": `Discord - ${nickname} `
         };
