@@ -73,7 +73,12 @@ export const startHugin = async () => {
     }
 }
 
-export const sendHuginMessage = async (nickname, message, fee=10000) => {
+export const sendHuginMessage = async (nickname, message, fee=10000, attempt=1) => {
+
+    if (attempt > 10) {
+      return false;
+    }
+
     let payload_hex;
 
     try {
@@ -117,7 +122,7 @@ export const sendHuginMessage = async (nickname, message, fee=10000) => {
               console.log(`Fee already too high, ignoring subsequent attempts`);
             }
             console.log(`Trying again with fee ${new_fee}.`);
-            sendHuginMessage(nickname, message, fee);
+            sendHuginMessage(nickname, message, fee, attempt + 1);
         }
 
     } catch(err) {
