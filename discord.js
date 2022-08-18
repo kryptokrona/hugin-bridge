@@ -81,10 +81,9 @@ client.on('interactionCreate', async (interaction) => {
         const message = options.getString('message')
 
         await interaction.deferReply();
-        await wait.setTimeout(1000);
-        await interaction.editReply(`**${board} | ${nickname}:** ${message}`);
 
         sendHuginMessage(nickname, message, board)
+            .then(await interaction.editReply(`**${board} | ${nickname}:** ${message}`))
     }
 })
 
