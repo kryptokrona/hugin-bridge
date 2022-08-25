@@ -4,7 +4,7 @@ import {CryptoNote} from "kryptokrona-utils";
 import {toHex} from "./utils.js";
 import {config} from "./config.js";
 
-const NODE = 'blocksum.org'
+const NODE = 'localhost'
 const PORT = 11898
 const daemon = new WB.Daemon(NODE, PORT)
 
