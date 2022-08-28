@@ -60,7 +60,7 @@ export const startDiscord = () => {
 
     client.on('messageCreate', data => {
         if (data.channelId === config.DISCORD_CHANNEL_ID && data.author.id !== config.DISCORD_BOT_ID) {
-            sendHuginMessage(data.author.username, (data.content), "Home")
+            sendHuginMessage(data.author.username, (data.content), "Discord")
         }
     })
 }
@@ -96,4 +96,3 @@ export const sendDiscordMessage = (nickname, message, board) => {
     console.log(`Sent Discord message`)
     console.log(`${board} | ${nickname}: ${message}`)
 }
-
