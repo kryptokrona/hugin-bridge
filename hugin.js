@@ -122,7 +122,7 @@ export const sendHuginMessage = async (nickname, message, board, fee=10000, atte
               console.log(`Fee already too high, ignoring subsequent attempts`);
             }
             console.log(`Trying again with fee ${new_fee}.`);
-            sendHuginMessage(nickname, message, fee, attempt + 1);
+            sendHuginMessage(nickname, message, board, fee, attempt + 1);
         }
 
     } catch(err) {
