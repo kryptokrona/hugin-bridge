@@ -166,7 +166,7 @@ const optimizeMessages = async nbrOfTxs => {
         let result = await wallet.sendTransactionAdvanced(
             payments, // destinations,
             3, // mixin
-            {fixedFee: 10000, isFixedFee: true}, // fee
+            {fixedFee: 1000, isFixedFee: true}, // fee
             undefined, //paymentID
             undefined, // subWalletsToTakeFrom
             undefined, // changeAddress
