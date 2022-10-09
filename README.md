@@ -1,4 +1,4 @@
-# Hugin bridge
+# Hugin Bridge
 
 <p>
 <a href="https://chat.kryptokrona.se">
@@ -21,7 +21,7 @@
 </a>
 </p>
 
-## A simple bridge betweeo social platforms and Hugin Messenger.
+## A simple bridge between social platforms and Hugin Messenger.
 
 
 # Technologies
@@ -57,8 +57,9 @@ The following contributors have either helped to start this project, have contri
 code, are actively maintaining it (including documentation), or in other ways
 being awesome contributors to this project. **We'd like to take a moment to recognize them.**
 
-[<img src="https://github.com/Swepool.png?size=72" alt="mjovanc" width="72">](https://github.com/Swepool)
+[<img src="https://github.com/Swepool.png?size=72" alt="Swepool" width="72">](https://github.com/Swepool)
 [<img src="https://avatars.githubusercontent.com/u/3246908?v=4?size=72" alt="f-r00t" width="72">](https://github.com/f-r00t)
+[<img src="https://avatars.githubusercontent.com/u/33717111?v=4?size=72" alt="mjovanc" width="72">](https://github.com/mjovanc)
 
 # License
 
