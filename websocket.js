@@ -1,7 +1,7 @@
 import {WebSocket} from "ws";
 import {sendDiscordMessage} from "./discord.js";
 import {config} from "./config.js";
-import {sendTelegramMessage} from "./telegram.js";
+// import {sendTelegramMessage} from "./telegram.js";
 
 const socket = new WebSocket(config.WEBSOCKET_URL);
 

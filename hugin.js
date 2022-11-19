@@ -1,8 +1,11 @@
 import WB from "kryptokrona-wallet-backend-js";
 import * as fs from "fs";
 import {CryptoNote} from "kryptokrona-utils";
-import {toHex} from "./utils.js";
+import {toHex, nonceFromTimestamp, hexToUint} from "./utils.js";
 import {config} from "./config.js";
+
+import nacl from 'tweetnacl';
+import naclUtil from 'tweetnacl-util';
 
 const NODE = 'localhost'
 const PORT = 11898
@@ -184,3 +187,130 @@ const optimizeMessages = async nbrOfTxs => {
     }
 
 }
+export async function sendGroupsMessage(message, group, nickname) {
+
+    const my_address = wallet.getPrimaryAddress();
+  
+    const [privateSpendKey, privateViewKey] = wallet.getPrimaryAddressPrivateKeys();
+  
+    const signature = await xkrUtils.signMessage(message, privateSpendKey);
+  
+    const timestamp = parseInt(Date.now());
+  
+    const nonce = nonceFromTimestamp(timestamp);
+  
+    let message_json = {
+      "m": message,
+      "k": my_address,
+      "s": signature,
+      "g": group,
+      "n": nickname
+    }
+  
+    const payload_unencrypted = naclUtil.decodeUTF8(JSON.stringify(message_json));
+  
+    const secretbox = nacl.secretbox(payload_unencrypted, nonce, hexToUint(group));
+  
+    const payload_encrypted = {"sb":Buffer.from(secretbox).toString('hex'), "t":timestamp};
+  
+    const payload_encrypted_hex = toHex(JSON.stringify(payload_encrypted));
+  
+    let result = await wallet.sendTransactionAdvanced(
+        [[my_address, 1]], // destinations,
+        3, // mixin
+        {fixedFee: 1000, isFixedFee: true}, // fee
+        undefined, //paymentID
+        undefined, // subWalletsToTakeFrom
+        undefined, // changeAddress
+        true, // relayToNetwork
+        false, // sneedAll
+        Buffer.from(payload_encrypted_hex, 'hex')
+    );
+  
+  
+    if (!result.success) {
+      result = await sendMessageWithHuginAPI(payload_encrypted_hex);
+    }
+  
+    if (result.success == true) {
+      console.log('Successfully sent the message')
+    }
+  
+    return result;
+  
+}
+export async function sendMessageWithHuginAPI(payload_hex) {
+
+    const response = await fetch(`https://api.hugin.chat/api/v1/posts`, {
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({payload: payload_hex}),
+    });
+    return response.json();
+  
+}
+export async function getGroupMessage(tx) {
+
+    let decryptBox = false;
+  
+    const groups = ['f2b8d1c7ca136639671f0858e8c72466e5add0e875c622ae0a0c35c4bf51950e']
+  
+    let key;
+  
+    let i = 0;
+  
+    while (!decryptBox && i < groups.length) {
+  
+      let possibleKey = 'f2b8d1c7ca136639671f0858e8c72466e5add0e875c622ae0a0c35c4bf51950e';
+  
+  
+      i += 1;
+  
+  
+      try {
+  
+       decryptBox = nacl.secretbox.open(
+         hexToUint(tx.tx_sb),
+         nonceFromTimestamp(tx.tx_timestamp),
+         hexToUint(possibleKey)
+       );
+  
+       key = possibleKey;
+      } catch (err) {
+        console.log(err);
+       continue;
+      }
+  
+  
+  
+    }
+  
+    if (!decryptBox) {
+      return false;
+    }
+  
+  
+    const message_dec = naclUtil.encodeUTF8(decryptBox);
+  
+    const payload_json = JSON.parse(message_dec);
+  
+    // const from = payload_json.k;
+    // const from_myself = (from == wallet.getPrimaryAddress() ? true : false);
+    // const received = (from_myself ? 'sent' : 'received');
+  
+    // const verified = await xkrUtils.verifyMessageSignature(payload_json.m, this_addr.spend.publicKey, payload_json.s);
+  
+    // console.log(payload_json)
+    // const nickname = payload_json.n ? payload_json.n : ('Anonymous');
+  
+    const group_object = groups.filter(group => {
+      return group.key == key;
+    })
+  
+    return payload_json;
+  
+  
+  }
+  

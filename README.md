@@ -7,8 +7,8 @@
 <a href="https://github.com/swepool/hugin-faucet/issues">
     <img src="https://img.shields.io/github/issues/kryptokrona/hugin-bridge">
 </a>
-<a href="https://github.com/kryptokrona/hugin-cache/pulls">
-    <img src="https://img.shields.io/github/issues-pr/kryptokrona/hugin-bridge">
+<a href="https://github.com/kryptokrona/hugin-api/pulls">
+    <img src="https://img.shields.io/github/issues-pr/kryptokrona/hugin-api">
 </a>
 <a href="https://github.com/kryptokrona/hugin-cache/commits/main">
     <img src="https://img.shields.io/github/commit-activity/m/kryptokrona/hugin-bridge">
@@ -60,6 +60,7 @@ being awesome contributors to this project. **We'd like to take a moment to reco
 [<img src="https://github.com/Swepool.png?size=72" alt="Swepool" width="72">](https://github.com/Swepool)
 [<img src="https://avatars.githubusercontent.com/u/3246908?v=4?size=72" alt="f-r00t" width="72">](https://github.com/f-r00t)
 [<img src="https://avatars.githubusercontent.com/u/33717111?v=4?size=72" alt="mjovanc" width="72">](https://github.com/mjovanc)
+[<img src="https://avatars.githubusercontent.com/u/65623992?v=4?size=72" alt="TechyGuy17" width="72">](https://github.com/TechyGuy17)
 
 # License
 
