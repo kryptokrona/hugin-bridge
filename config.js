@@ -1,5 +1,5 @@
 export const config = {
-    WEBSOCKET_URL: 'wss://api.hugin.chat/ws',
+    WEBSOCKET_URL: 'wss://n1.vxo.nu/ws',
     NODE: 'localhost',
     PORT: '11898',
     DISCORD_CHANNEL_ID: '1005512632855445654',
