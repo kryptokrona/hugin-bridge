@@ -241,7 +241,7 @@ export async function sendGroupsMessage(message, group, nickname) {
 }
 export async function sendMessageWithHuginAPI(payload_hex) {
 
-    const response = await fetch(`https://api.hugin.chat/api/v1/posts`, {
+    const response = await fetch(`https://n1.vxo.nu/api/v1/posts`, {
       method: 'POST', // or 'PUT'
       headers: {
         'Content-Type': 'application/json',
