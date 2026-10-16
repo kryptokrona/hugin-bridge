@@ -3,17 +3,17 @@
 <p>
 <a href="https://chat.kryptokrona.se">
     <img src="https://img.shields.io/discord/562673808582901793?label=Discord&logo=Discord&logoColor=white&style=flat">
-</a> 
-<a href="https://github.com/swepool/hugin-faucet/issues">
+</a>
+<a href="https://github.com/kryptokrona/hugin-bridge/issues">
     <img src="https://img.shields.io/github/issues/kryptokrona/hugin-bridge">
 </a>
-<a href="https://github.com/kryptokrona/hugin-api/pulls">
-    <img src="https://img.shields.io/github/issues-pr/kryptokrona/hugin-api">
+<a href="https://github.com/kryptokrona/hugin-bridge/pulls">
+    <img src="https://img.shields.io/github/issues-pr/kryptokrona/hugin-bridge">
 </a>
-<a href="https://github.com/kryptokrona/hugin-cache/commits/main">
+<a href="https://github.com/kryptokrona/hugin-bridge/commits/main">
     <img src="https://img.shields.io/github/commit-activity/m/kryptokrona/hugin-bridge">
 </a>
-<a href="https://github.com/kryptokrona/hugin-cache/graphs/contributors">
+<a href="https://github.com/kryptokrona/hugin-bridge/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/kryptokrona/hugin-bridge">
 </a>
 <a href="https://twitter.com/kryptokrona">
@@ -21,8 +21,56 @@
 </a>
 </p>
 
-## A simple bridge between social platforms and Hugin Messenger.
+A bridge that relays messages between [Hugin Messenger](https://github.com/kryptokrona/hugin) encrypted groups, Discord and Telegram, so a conversation started on one platform shows up on the others.
 
+## Requirements
+
+- Node.js 16+ and npm
+- A synced [Kryptokrona](https://github.com/kryptokrona/kryptokrona) daemon (`kryptokrona-nodegui` or `kryptokrond`), reachable at the `NODE`/`PORT` configured in `config.js`
+- A Discord bot token, with the bot invited to your server
+- A Telegram bot token, with the bot added to your group
+
+## Configuration
+
+1. Copy `.env-example` to `.env` and fill in your tokens:
+
+   ```
+   DISCORD_BOT_TOKEN=your-discord-bot-token
+   TELEGRAM_BOT_TOKEN=your-telegram-bot-token
+   ```
+
+2. Edit `config.js` with the IDs for your own setup:
+
+   | Key | Description |
+   | --- | --- |
+   | `WEBSOCKET_URL` | Hugin cache websocket to listen on for incoming messages |
+   | `NODE` / `PORT` | Address of the Kryptokrona daemon used by the bridge wallet |
+   | `DISCORD_CHANNEL_ID` | Discord channel that mirrors the Hugin board |
+   | `DISCORD_BOT_ID` | Your Discord bot's application ID |
+   | `DEFAULT_NICKNAME` | Nickname used when a sender has none set |
+   | `BOT_ADDRESS` | The bridge wallet's Hugin address |
+   | `TELEGRAM_GROUP_ID` | Telegram group that mirrors the Hugin board |
+
+On first run the bridge creates a `bridge.wallet` file and prints its address to the console; fund or register that address as needed on the Hugin side.
+
+## Running locally
+
+```bash
+npm install
+npm start
+```
+
+`npm start` runs `app.js`, which connects the websocket, wallet, Telegram bot and Discord bot together. Use `npm run dev` instead to auto-restart on file changes while developing.
+
+## Example
+
+**Hugin → Discord/Telegram:** a message posted to a Hugin board is relayed as:
+
+```
+**general | Anon:** hello from Hugin
+```
+
+**Discord/Telegram → Hugin:** replying from Discord with the `/respond` slash command (or sending a message in the linked Telegram group) encrypts and relays the text back onto the Hugin board under the sender's nickname.
 
 # Technologies
 
